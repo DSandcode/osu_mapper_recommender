@@ -31,11 +31,10 @@ def download_url(url, save_path, chunk_size=128):
 
 
 def unzip(userid, beatmap_id):
-    print("a")
     filepath = f"data/{userid}/{beatmap_id}/{beatmap_id}.osz"
-    print("b")
+    extractpath = f"data/{userid}/{beatmap_id}/"
     with zipfile.ZipFile(filepath, "r") as zip_ref:
-        zip_ref.extractall()
+        zip_ref.extractall(extractpath)
 
 
 def move_osu_files(source_dir, dest_dir):
@@ -45,15 +44,15 @@ def move_osu_files(source_dir, dest_dir):
             shutil.copy2(file, dest_dir)
 
 
-def delete_extra(source_dir):
+def delete_extra(source_dir, file_extension, log=False):
     for subdir, dirs, files in os.walk(source_dir):
         for filename in files:
             filepath = subdir + os.sep + filename
 
-            if filepath.endswith(".osu"):
-                print("osu file", filepath)
+            if filepath.endswith(file_extension):
+                log_print(log, f"osu file {filepath}")
             else:
-                print("deleting", filepath)
+                log_print(log, f"deleting {filepath}")
                 os.remove(filepath)
 
 
