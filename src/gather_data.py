@@ -13,14 +13,63 @@ from src.osu_df_row import *
 
 def gather_map_data(userids, save_path, log=False):
     r_dict = make_r_df()
-    saved_mapper = []
+    userids = [int(i) for i in userids.tolist()] if type(userids) == list else [userids]
+    saved_mappers, all_mappers, saved_beatmapid, unsaved_mappers = (
+        [],
+        [],
+        [],
+        [],
+    )
+    try:
+        saved_mappers = np.loadtxt("map_data/saved_mappers", delimiter="\n")
+        saved_mappers = (
+            [int(i) for i in saved_mappers.tolist()]
+            if len(saved_mappers) > 1
+            else [int(saved_mappers[0])]
+        )
+    except:
+        pass
+    try:
+        all_mappers = np.loadtxt("map_data/all_mapperids", delimiter="\n").tolist()
+        all_mappers = (
+            [int(i) for i in all_mappers.tolist()]
+            if len(all_mappers) > 1
+            else [int(all_mappers[0])]
+        )
+    except:
+        pass
+    try:
+        saved_beatmapid = np.loadtxt("map_data/savedbeatmapsid", delimiter="\n")
+        saved_beatmapid = (
+            [int(i) for i in saved_beatmapid.tolist()]
+            if len(saved_beatmapid) > 1
+            else [int(saved_beatmapid[0])]
+        )
+    except:
+        pass
+    try:
+        unsaved_mappers = np.loadtxt("map_data/unsaved_mappers", delimiter="\n")
+        unsaved_mappers = (
+            [int(i) for i in unsaved_mappers.tolist()]
+            if len(unsaved_mappers) > 1
+            else [int(unsaved_mappers[0])]
+        )
+    except:
+        unsaved_mappers = userids
     try:
         os.mkdir("data")
     except:
         log_print(log, "data dir exists")
 
+    all_mappers = all_mappers + userids
+    np.savetxt(
+        "map_data/all_mapperids",
+        np.unique(all_mappers).astype(int),
+        delimiter="\n",
+        fmt="%4d",
+    )
+
     for userid in userids:
-        saved_mapper.append(userid)
         try:
             os.mkdir(f"data/{userid}")
         except:
@@ -29,7 +78,7 @@ def gather_map_data(userids, save_path, log=False):
         user_json = get_user_beatmaps(userid)
         mapids = store_mapids(userid, user_json)
 
-        log_print(log, "\nstarting \n")
+        log_print(log, f"\nstarting {userid} \n")
 
         for beatmap_id in mapids:
 
@@ -107,7 +156,6 @@ def gather_map_data(userids, save_path, log=False):
             except:
                 log_print(log, "failed to make rows")
 
-            log_print(log, "\n-----NEXT MAP-----\n")
             try:
 
                 log_print(log, "Removing files")
@@ -120,11 +168,20 @@ def gather_map_data(userids, save_path, log=False):
             except:
                 log_print(log, "Failed to remove files")
 
+            saved_beatmapid.append(beatmap_id)
+            np.savetxt(
+                f"{save_path}/savedbeatmapsid",
+                np.unique(saved_beatmapid),
+                delimiter="\n",
+                fmt="%4d",
+            )
+
+            log_print(log, "\n-----NEXT MAP-----\n")
         try:
             mapper_dir = f"./data/{userid}/"
             log_print(log, "Removing files")
 
-            delete_extra(f"{mapper_dir}/", ".osu")
+            delete_extra(f"{mapper_dir}/", ".a")
             os.rmdir(mapper_dir)
 
             log_print(log, "Removed files")
@@ -132,14 +189,29 @@ def gather_map_data(userids, save_path, log=False):
         except:
             log_print(log, "Failed to remove files")
 
+        unsaved_mappers.remove(userid)
+        np.savetxt(
+            f"{save_path}/unsaved_mappers",
+            np.unique(unsaved_mappers),
+            delimiter="\n",
+            fmt="%4d",
+        )
+        saved_mappers.append(userid)
+        np.savetxt(
+            f"{save_path}/saved_mappers",
+            np.unique(saved_mappers),
+            delimiter="\n",
+            fmt="%4d",
+        )
+
+        pickle.dump(r_dict, open(f"{save_path}/map_data.pkl", "wb"))
+
         log_print(log, "\n\n-- NEXT MAPPER--\n\n")
 
     log_print(log, "Finished")
-    saved_mapper = np.unique(saved_mapper)
-    np.savetxt(f"{save_path}/saved_mappers", saved_mapper, delimiter="\n", fmt="%4d")
     r_df = pd.DataFrame(r_dict)
     r_df.to_csv(f"{save_path}/map_data.csv", index=False)
-    return r_df,saved_mapper
+    return r_df, saved_mappers
 
 
 if __name__ == "__main__":

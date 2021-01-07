@@ -10,10 +10,10 @@ if __name__ == "__main__":
         pass
     unsaved_mapper = np.loadtxt("map_data/unsaved_mappers", delimiter="\n")
     df, saved_mappers = gather_map_data(
-        unsaved_mapper.astype(int), "map_data", log=True
+        (unsaved_mapper.astype(int)).tolist(), "map_data", log=True
     )
-    all_mappers = np.unique(saved_mappers.astype(int) + unsaved_mapper.astype(int))
-    np.savetxt(
-        "map_data/all_mapperids", all_mappers.astype(int), delimiter="\n", fmt="%4d"
-    )
+    # all_mappers = np.unique(saved_mappers.astype(int) + unsaved_mapper.astype(int))
+    # np.savetxt(
+    #     "map_data/all_mapperids", all_mappers.astype(int), delimiter="\n", fmt="%4d"
+    # )
     np.savetxt("map_data/unsaved_mappers", np.array([]), delimiter="\n", fmt="%4d")

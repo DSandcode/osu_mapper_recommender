@@ -8,4 +8,4 @@ def sort_unique(file_name):
 
 
 if __name__ == "main":
-    file_name = "data/mapperid_l1"
+    file_name = "data/unsaved_mappers"
