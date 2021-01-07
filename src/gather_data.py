@@ -13,7 +13,7 @@ from src.osu_df_row import *
 
 def gather_map_data(userids, save_path, log=False):
     r_dict = make_r_df()
-    userids = [int(i) for i in userids.tolist()] if type(userids) == list else [userids]
+    userids = [int(i) for i in userids] if type(userids) == list else [userids]
     saved_mappers, all_mappers, saved_beatmapid, unsaved_mappers = (
         [],
         [],
