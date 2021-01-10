@@ -4,6 +4,9 @@ import requests
 import zipfile
 import glob, os, shutil
 
+from src.parse_save import *
+from src.osu_df_row import *
+
 
 def get_user_beatmaps(userid):
     r_data = []
@@ -138,6 +141,99 @@ def get_user_ranked_maps(userid, log=False):
             print("\n-----NEXT MAP-----\n")
 
 
+def download_beatmap(userid, beatmap_id, r_dict=make_r_df(), log=False):
+    try:
+        os.mkdir(f"data/")
+    except:
+        log_print(log, "Failed to make directories or directory exists")
+    try:
+        os.mkdir(f"data/{userid}/")
+    except:
+        log_print(log, "Failed to make directories or directory exists")
+
+    try:
+        os.mkdir(f"data/{userid}/{beatmap_id}")
+    except:
+        log_print(log, "Failed to make directories or directory exists")
+
+    map_dir = f"./data/{userid}/{beatmap_id}"
+
+    log_print(log, f"Starting process in {map_dir}")
+
+    try:
+
+        log_print(log, f"Downloading {beatmap_id}")
+        # f"https://beatconnect.io/b/{beatmap_id}"
+        # f"https://bloodcat.com/osu/s/{beatmap_id}",
+        download_url(
+            f"https://beatconnect.io/b/{beatmap_id}", f"{map_dir}/{beatmap_id}.osz",
+        )
+
+        log_print(
+            log, f"Successfully downloaded from https://beatconnect.io/b/{beatmap_id}",
+        )
+
+    except:
+        log_print(log, "failed to download")
+
+    try:
+        log_print(log, f"unzipping {map_dir}/{beatmap_id}.osz")
+
+        unzip(userid, beatmap_id)
+
+        log_print(log, "Successfully unzipped")
+    except:
+        log_print(log, "Failed to unzip file")
+
+    try:
+        log_print(log, "Removing Extra")
+
+        delete_extra(f"{map_dir}/", ".osu")
+
+        log_print(log, "Successfully Removed Files")
+    except:
+        log_print(log, "failed to remove files")
+
+    try:
+        log_print(log, "Parsing files")
+
+        scan_parse_save(map_dir, log=log)
+
+        log_print(log, "Finished parsing\n")
+    except:
+        log_print(log, "Failed to parse")
+    try:
+        log_print(log, "Removing Extra")
+
+        delete_extra(f"{map_dir}/", ".pkl")
+
+        log_print(log, "Successfully Removed Files")
+    except:
+        log_print(log, "failed to remove files")
+
+    try:
+        log_print(log, "Making Rows\n")
+
+        add_rows(map_dir, r_dict, log)
+
+        log_print(log, "Added rows")
+
+    except:
+        log_print(log, "failed to make rows")
+
+    try:
+
+        log_print(log, "Removing files")
+
+        delete_extra(f"{map_dir}/", ".osu")
+        os.rmdir(map_dir)
+
+        log_print(log, "removed files")
+
+    except:
+        log_print(log, "Failed to remove files")
+
+
 if __name__ == "__main__":
     userid = "13869387"
     # beatmaps_json = get_user_beatmaps(userid)
@@ -152,4 +248,6 @@ if __name__ == "__main__":
 
     # move_osu_files("data/unzipped_osz/1272018", "data/songs_osu_files/1272018")
 
-    get_user_ranked_maps(userid, log=True)
+    # get_user_ranked_maps(userid, log=True)
+    r_dict = make_r_df()
+    download_beatmap(13869387, 1192164, r_dict=r_dict, log=True)
