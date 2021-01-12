@@ -1,9 +1,6 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import scipy.stats as stats
-import zipfile
-import glob, os, shutil
+import os
 
 from src.get_beatmaps import *
 from src.osufileparser import *

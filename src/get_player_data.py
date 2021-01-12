@@ -11,14 +11,12 @@ def get_user_json(userid, mode="osu", log=False):
         "best": 0,
         "activity": 0,
         "firsts": 0,
-        "most": 0,
         "recent": 0,
     }
     api_addresses = [
         f"scores/best?mode={mode}&",
         "recent_activity?",
         f"scores/firsts?mode={mode}&",
-        "beatmapsets/most_played?",
         f"scores/recent?mode={mode}&",
     ]
     for api_address, key in zip(api_addresses, r_dict):

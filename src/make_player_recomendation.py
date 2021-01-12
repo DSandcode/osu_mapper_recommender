@@ -57,7 +57,7 @@ def make_player_recomendation(userid, mode="osu", log=False):
     beatmapid_rec = map_df[["beatmapid", "beatmapsetid", "percent"]]
     # print(map_rec_idx)
     # 29822
-    return (beatmapid_rec, map_rec)
+    return beatmapid_rec
 
 
 if __name__ == "__main__":
@@ -66,7 +66,8 @@ if __name__ == "__main__":
     arc_id = 13869387
     hero_id = 12727076
     # 2625, 18292, 13543
-    arc_df, arc_rec = make_player_recomendation(arc_id, log=True)
+    p_df = make_player_recomendation(16771869, log=True)
+    # arc_df, arc_rec = make_player_recomendation(arc_id, log=True)
     # 2626, 18286, 13539
-    hero_df, hero_rec = make_player_recomendation(hero_id, log=True)
+    # hero_df, hero_rec = make_player_recomendation(hero_id, log=True)
 
