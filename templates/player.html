@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Player ID{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+      <div class="col">
+  
+        <h1>Recommend Map</h1>
+        <hr>
+        <img src='static/images/ID.png' alt='Where to find the user id, it is at the end of the URL for you osu profile'>
+        <form action="/rec" method="GET">
+  
+          <div class="form-group">
+            <h2>Player ID</h2>
+            <input type="text" class="form-control" id="u" name="u" placeholder="Insert your osu player ID">
+          </div>
+  
+          <button type="submit" class="btn btn-primary">Recommend</button>
+  
+        </form>
+  
+      </div>
+    </div>
+  </div>
+  {% if feedback %}
+<p class="text-danger float-right">{{ feedback }}</p>
+{% endif %}
+{% endblock %}

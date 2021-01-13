@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    <title>osu! recommender</title>
+</head>
+
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+        <h1>{% block title %} osu! recommender {% endblock %}</h1>
+
+        <a href="player"><h2>Click Here to try it out</h2></a>
+    {% endblock %}
+</body>
+
+</html>

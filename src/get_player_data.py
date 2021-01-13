@@ -42,7 +42,7 @@ def get_user_json(userid, mode="osu", log=False):
 def get_user_beatmapids(userid, mode="osu", log=False):
     log_print(log, f"Getting {userid} beatmapsid in mode:{mode}")
     r_list = []
-    user_data = get_user_json(userid, mode=mode, log=True)
+    user_data = get_user_json(userid, mode=mode, log=log)
     for data_key in user_data:
         log_print(log, f"Getting ids from {data_key}")
         if data_key != "activity":

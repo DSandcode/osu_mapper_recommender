@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Recommended{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+      <div class="col">
+  
+        <h1>Recommended Maps</h1>
+        <hr>
+        <ol>
+        {% for mapid, setid in recs %}
+            <li>
+                Beatmapset ID: {{setid}} <br>
+                Beatmap ID: {{ mapid}} <br>
+                Link:
+            <a href='https://osu.ppy.sh/beatmapsets/{{setid}}#osu/{{mapid}}' target="_blank">
+                https://osu.ppy.sh/beatmapsets/{{setid}}#osu/{{mapid}}
+            </a>
+            </li>
+            <hr>
+        {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </div>
+{% endblock %}
